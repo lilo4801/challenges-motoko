@@ -1,5 +1,6 @@
 import Array "mo:base/Array";
 import Nat "mo:base/Nat";
+import Iter "mo:base/Iter";
 actor {
   public func greet(name : Text) : async Text {
     return "Hello, " # name # "!";
@@ -67,7 +68,22 @@ actor {
         });
   };
    public func selection_sort(array : [Nat]) : async [Nat] {
-        return Array.sort(array, Nat.compare);
+        var newArray : [var Nat] = Array.thaw(array); 
+        var temp = 0;
+        var min_idx = 0;  
+
+        for (i in Iter.range(0, newArray.size()-1)) { 
+            min_idx := i; 
+            for (j in Iter.range(i+1, newArray.size()-1)) {
+              if (newArray[j] < newArray[min_idx]) {
+                   min_idx := j; 
+              };
+            };
+            temp := newArray[min_idx]; 
+            newArray[min_idx] := newArray[i]; 
+            newArray[i] := temp;      
+        };
+     return Array.freeze(newArray);
     };
 
 
